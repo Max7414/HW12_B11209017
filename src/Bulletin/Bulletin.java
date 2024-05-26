@@ -62,18 +62,17 @@ public class Bulletin {
 	static void write(String name, Date timestamp, String message, Comment comment) throws ClassNotFoundException {
 		mkdir();
 		try {
-
-			File f = new File("data\\");
+			File f = new File("data" + File.separator);
 			String[] fileList = f.list();
 			boolean repeat = false;
 			for (var i : fileList) {
 				if ((comment.name + ".ser").equals(i)) {
-					try (FileInputStream fis = new FileInputStream("data\\" + i);
+					try (FileInputStream fis = new FileInputStream("data" + File.separator + i);
 							ObjectInputStream ois = new ObjectInputStream(fis)) {
 						Comment c = (Comment) ois.readObject();
 						c.message.add(message);
 						c.timestamp.add(timestamp);
-						FileOutputStream fos = new FileOutputStream("data\\" + name + ".ser");
+						FileOutputStream fos = new FileOutputStream("data" + File.separator + name + ".ser");
 						ObjectOutputStream oos = new ObjectOutputStream(fos);
 						oos.writeObject(c);
 						oos.close();
@@ -85,7 +84,7 @@ public class Bulletin {
 				}
 			}
 			if (!repeat) {
-				FileOutputStream fos = new FileOutputStream("data\\" + name + ".ser");
+				FileOutputStream fos = new FileOutputStream("data" + File.separator + name + ".ser");
 				ObjectOutputStream oos = new ObjectOutputStream(fos);
 				oos.writeObject(comment);
 				oos.close();
@@ -98,18 +97,16 @@ public class Bulletin {
 
 	static void read() {
 		mkdir();
-		File f = new File("data\\");
+		File f = new File("data" + File.separator);
 		String[] fileList = f.list();
 		for (var i : fileList) {
-			try (FileInputStream fis = new FileInputStream("data\\" + i);
+			try (FileInputStream fis = new FileInputStream("data" + File.separator + i);
 					ObjectInputStream ois = new ObjectInputStream(fis)) {
 
 				Comment comment = (Comment) ois.readObject();
-				
-				if(comment.timestamp.size()>1 && comment.message.size()>1)
-				{
-					for(int j=0;j<comment.message.size();j++)
-					{
+
+				if (comment.timestamp.size() > 1 && comment.message.size() > 1) {
+					for (int j = 0; j < comment.message.size(); j++) {
 
 						System.out.println("**********");
 						System.out.println("Name:" + comment.name);
@@ -117,23 +114,22 @@ public class Bulletin {
 						System.out.println("Message:");
 						System.out.println(comment.message.get(j));
 					}
-				}
-				else {
+				} else {
 					System.out.println("**********");
 					System.out.println("Name:" + comment.name);
 					System.out.println("Date:" + comment.timestamp.get(0));
 					System.out.println("Message:");
 					System.out.println(comment.message.get(0));
 				}
-				
+
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 
 		}
 	}
-	static void mkdir()
-	{
+
+	static void mkdir() {
 		File f = new File("data");
 		if (!f.exists())
 			if (!f.mkdir())
